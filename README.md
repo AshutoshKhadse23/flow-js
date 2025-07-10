@@ -4,7 +4,7 @@ Flow.js is a JavaScript library that aims to abstract the complex, lengthy and v
 
 ## Why Flow.js?
 
-WebGL and Three.js are powerful—but verbose, low-level, and intimidating to newcomers. Flow.js removes the boilerplate, letting you focus on your **scene**, not the scaffolding.
+WebGL and Three.js are powerful, but verbose, low-level, and intimidating to newcomers. Flow.js removes the boilerplate, letting you focus on your **scene**, not the scaffolding.
 
 Use simple config-based or declarative patterns to:
 - Set up 3D scenes
