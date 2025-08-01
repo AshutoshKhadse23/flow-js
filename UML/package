@@ -1,0 +1,63 @@
+@startuml
+title Package Diagram: Scene Integration System
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "Scene Integration System" {
+
+  package "core" <<sub package>> {
+    class SceneLoader {
+      +loadScene(path)
+      -parseSceneData()
+      -initializeScene()
+    }
+
+    class Renderer {
+      +render(scene, camera)
+    }
+  }
+
+  package "loaders" <<sub package>> {
+    class ModelImporter {
+      +loadModels(path)
+      -parseOBJ()
+    }
+
+    class MaterialHandler {
+      +applyMaterials(models)
+      -loadTextures()
+    }
+  }
+
+  package "env" <<sub package>> {
+    class LightingManager {
+      +setupDefaultLighting()
+      -createDirectionalLight()
+    }
+
+    class EnvironmentHandler {
+      +applyHDRI(path)
+    }
+  }
+
+  ' Internal relationships
+  SceneLoader --> ModelImporter
+  SceneLoader --> MaterialHandler
+  SceneLoader --> LightingManager
+  SceneLoader --> EnvironmentHandler
+  SceneLoader --> Renderer
+}
+
+' External/outer dependency
+package "Three.js Engine" <<outer package>> {
+  class WebGLRenderer {
+    +render()
+    +setSize()
+  }
+}
+
+' External usage relation
+SceneLoader ..> WebGLRenderer : uses
+
+@enduml

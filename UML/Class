@@ -1,0 +1,58 @@
+@startuml
+title Class Diagram
+skinparam classAttributeIconSize 0
+
+' Main controller class
+class SceneLoader {
+  -scenePath: String
+  -scene: Scene
+  -camera: Camera
+  -renderer: Renderer
+  +loadScene(path: String): void
+  -parseSceneData(): void
+  -initializeScene(): void
+}
+
+' Renderer integrates all components and draws the final scene
+class Renderer {
+  -canvas: HTMLCanvasElement
+  -threeRenderer: WebGLRenderer
+  +render(scene: Scene, camera: Camera): void
+}
+
+' Responsible for importing 3D models (OBJ, FBX, GLTF, etc.)
+class ModelImporter {
+  -modelPath: String
+  -loadedModels: List<Object3D>
+  +loadModels(path: String): List<Object3D>
+  -parseOBJ(): Object3D
+}
+
+' Applies materials to 3D models
+class MaterialHandler {
+  -texturePath: String
+  +applyMaterials(models: List<Object3D>): void
+  -loadTextures(): void
+}
+
+' Handles lighting configuration
+class LightingManager {
+  -lights: List<Light>
+  +setupDefaultLighting(): void
+  -createDirectionalLight(): Light
+}
+
+' Applies environmental settings (e.g., HDRI)
+class EnvironmentHandler {
+  -hdriPath: String
+  +applyHDRI(path: String): void
+}
+
+' Class relationships using appropriate UML semantics
+SceneLoader *-- ModelImporter 
+SceneLoader *-- MaterialHandler 
+SceneLoader *-- LightingManager 
+SceneLoader *-- EnvironmentHandler 
+SceneLoader *-- Renderer 
+
+@enduml

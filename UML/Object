@@ -1,0 +1,61 @@
+@startuml
+title Object Diagram
+skinparam classAttributeIconSize 0
+hide circle
+
+class "<u>sceneLoader</u>" {
+  -scenePath
+  -scene
+  -camera
+  -renderer
+  --
+  +loadScene()
+  -parseSceneData()
+  -initializeScene()
+}
+
+class "<u>modelImporter</u>" {
+  -modelPath
+  -loadedModels
+  --
+  +loadModels()
+  -parseOBJ()
+}
+
+class "<u>materialHandler</u>" {
+  -texturePath
+  --
+  +applyMaterials()
+  -loadTextures()
+}
+
+class "<u>lightingManager</u>" {
+  -lights
+  --
+  +setupDefaultLighting()
+  -createDirectionalLight()
+}
+
+class "<u>envHandler</u>" {
+  -hdriPath
+  --
+  +applyHDRI()
+}
+
+class "<u>renderer</u>" {
+  -canvas
+  -threeRenderer
+  --
+  +render()
+}
+
+"<u>sceneLoader</u>" *-- "<u>modelImporter</u>"
+"<u>sceneLoader</u>" *-- "<u>materialHandler</u>"
+"<u>sceneLoader</u>" *-- "<u>lightingManager</u>"
+"<u>sceneLoader</u>" *-- "<u>envHandler</u>"
+"<u>sceneLoader</u>" *-- "<u>renderer</u>"
+
+@enduml
+
+
+Object Diagram
