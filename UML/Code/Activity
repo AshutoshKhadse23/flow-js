@@ -1,0 +1,52 @@
+@startuml
+|Developer|
+start
+:Call loadScene(path);
+
+|SceneLoader|
+:Validate scene path;
+if (Path is valid?) then (yes)
+  :Parse scene metadata;
+  :Create empty Three.js scene;
+else (no)
+  stop
+endif
+
+:Initialize ModelImporter;
+|ModelImporter|
+:Check model format (OBJ/GLTF);
+:Load model file(s);
+:Parse mesh data;
+:Return Object3D instances;
+
+|SceneLoader|
+:Attach models to scene;
+
+|MaterialHandler|
+:Check for material files;
+:Load textures;
+:Assign materials to meshes;
+if (Missing textures?) then (fallback)
+  :Apply default material;
+endif
+
+|LightingManager|
+:Initialize lighting config;
+:Add directional and ambient lights;
+:Set light intensity and position;
+
+|EnvironmentHandler|
+:Check HDRI file;
+:Load environment texture;
+:Apply to scene background and reflections;
+
+|Renderer|
+:Configure renderer settings;
+:Set canvas size and resolution;
+:Start rendering loop;
+:Render scene with active camera;
+
+|Developer|
+:Scene loaded and rendered;
+stop
+@enduml

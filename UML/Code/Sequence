@@ -1,0 +1,43 @@
+@startuml
+autonumber
+
+participant Developer
+participant sceneLoader
+participant modelImporter
+participant materialHandler
+participant lightingManager
+participant envHandler
+participant renderer
+
+Developer -> sceneLoader : loadScene(path)
+activate sceneLoader
+
+sceneLoader -> modelImporter : loadModels(path)
+activate modelImporter
+modelImporter --> sceneLoader : return models
+deactivate modelImporter
+
+sceneLoader -> materialHandler : applyMaterials(models)
+activate materialHandler
+materialHandler --> sceneLoader : materials applied
+deactivate materialHandler
+
+sceneLoader -> lightingManager : setupDefaultLighting()
+activate lightingManager
+lightingManager --> sceneLoader : lighting ready
+deactivate lightingManager
+
+sceneLoader -> envHandler : applyHDRI(path)
+activate envHandler
+envHandler --> sceneLoader : environment ready
+deactivate envHandler
+
+sceneLoader -> renderer : render(scene, camera)
+activate renderer
+renderer --> sceneLoader : scene rendered
+deactivate renderer
+
+sceneLoader --> Developer : Scene Loaded Successfully
+deactivate sceneLoader
+
+@enduml
