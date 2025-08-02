@@ -3,7 +3,7 @@ title Object Diagram
 skinparam classAttributeIconSize 0
 hide circle
 
-class "<u>sceneLoader</u>" {
+class "<u>SceneLoader</u>" {
   -scenePath
   -scene
   -camera
@@ -14,7 +14,7 @@ class "<u>sceneLoader</u>" {
   -initializeScene()
 }
 
-class "<u>modelImporter</u>" {
+class "<u>ModelImporter</u>" {
   -modelPath
   -loadedModels
   --
@@ -22,40 +22,37 @@ class "<u>modelImporter</u>" {
   -parseOBJ()
 }
 
-class "<u>materialHandler</u>" {
+class "<u>MaterialHandler</u>" {
   -texturePath
   --
   +applyMaterials()
   -loadTextures()
 }
 
-class "<u>lightingManager</u>" {
+class "<u>LightingManager</u>" {
   -lights
   --
   +setupDefaultLighting()
   -createDirectionalLight()
 }
 
-class "<u>envHandler</u>" {
+class "<u>EnvironmentHandler</u>" {
   -hdriPath
   --
   +applyHDRI()
 }
 
-class "<u>renderer</u>" {
+class "<u>Renderer</u>" {
   -canvas
   -threeRenderer
   --
   +render()
 }
 
-"<u>sceneLoader</u>" *-- "<u>modelImporter</u>"
-"<u>sceneLoader</u>" *-- "<u>materialHandler</u>"
-"<u>sceneLoader</u>" *-- "<u>lightingManager</u>"
-"<u>sceneLoader</u>" *-- "<u>envHandler</u>"
-"<u>sceneLoader</u>" *-- "<u>renderer</u>"
+"<u>SceneLoader</u>" *-- "<u>ModelImporter</u>"
+"<u>SceneLoader</u>" *-- "<u>MaterialHandler</u>"
+"<u>SceneLoader</u>" *-- "<u>LightingManager</u>"
+"<u>SceneLoader</u>" *-- "<u>EnvironmentHandler</u>"
+"<u>SceneLoader</u>" *-- "<u>Renderer</u>"
 
 @enduml
-
-
-Object Diagram
