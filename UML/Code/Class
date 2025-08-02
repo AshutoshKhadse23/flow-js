@@ -1,6 +1,9 @@
 @startuml
-title Class Diagram
+title Class Diagram: Scene Integration System
+
 skinparam classAttributeIconSize 0
+
+' --- System Classes ---
 
 ' Main controller class
 class SceneLoader {
@@ -13,46 +16,54 @@ class SceneLoader {
   -initializeScene(): void
 }
 
-' Renderer integrates all components and draws the final scene
+' Integrates components and uses WebGLRenderer to draw
 class Renderer {
   -canvas: HTMLCanvasElement
-  -threeRenderer: WebGLRenderer
   +render(scene: Scene, camera: Camera): void
 }
 
-' Responsible for importing 3D models (OBJ, FBX, GLTF, etc.)
+' Responsible for importing 3D models
 class ModelImporter {
   -modelPath: String
   -loadedModels: List<Object3D>
   +loadModels(path: String): List<Object3D>
-  -parseOBJ(): Object3D
 }
 
 ' Applies materials to 3D models
 class MaterialHandler {
   -texturePath: String
   +applyMaterials(models: List<Object3D>): void
-  -loadTextures(): void
 }
 
 ' Handles lighting configuration
 class LightingManager {
   -lights: List<Light>
   +setupDefaultLighting(): void
-  -createDirectionalLight(): Light
 }
 
-' Applies environmental settings (e.g., HDRI)
+' Applies environmental settings
 class EnvironmentHandler {
   -hdriPath: String
   +applyHDRI(path: String): void
 }
 
-' Class relationships using appropriate UML semantics
-SceneLoader *-- ModelImporter 
-SceneLoader *-- MaterialHandler 
-SceneLoader *-- LightingManager 
-SceneLoader *-- EnvironmentHandler 
-SceneLoader *-- Renderer 
+' --- External Library Class ---
+class WebGLRenderer {
+  +render(scene, camera)
+  +setSize(width, height)
+}
+
+
+' --- Class Relationships ---
+
+' SceneLoader creates and owns instances of its helper classes (Composition)
+SceneLoader *-- ModelImporter
+SceneLoader *-- MaterialHandler
+SceneLoader *-- LightingManager
+SceneLoader *-- EnvironmentHandler
+SceneLoader *-- Renderer
+
+' The system's Renderer uses the external WebGLRenderer (Dependency)
+Renderer ..> WebGLRenderer : uses
 
 @enduml
