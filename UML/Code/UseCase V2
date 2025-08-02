@@ -1,0 +1,71 @@
+@startuml
+title Use Case Diagram: Scene Integration System (Vertical Layout)
+
+' --- General Setup ---
+top to bottom direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BorderColor black
+  BackgroundColor White
+  ArrowColor black
+  FontSize 14
+}
+
+' --- Actors ---
+actor "Frontend Developer" as FD
+actor "Blender Exporter" as BE
+actor "Three.js Engine" as TJ
+
+' --- System Boundary ---
+rectangle "Scene Integration System" {
+  usecase "Load Scene" as UC1
+  usecase "Render Scene to Canvas" as UC8
+  usecase "Initialize Scene" as UC2
+  usecase "Parse Scene Data" as UC3
+  usecase "Import Models" as UC4
+  usecase "Apply Materials" as UC5
+  usecase "Setup Default Lighting" as UC6
+  usecase "Apply HDRI Environment" as UC7
+  usecase "Use WebGLRenderer" as UC9
+  usecase "Log Errors" as UC10
+}
+
+' --- Positioning Hints ---
+' Position primary use cases side-by-side at the top.
+UC1 -[hidden]right- UC8
+
+' Arrange "Load Scene" includes in a row below UC1.
+UC1 -[hidden]down- UC2 
+UC2 -[hidden]right- UC3
+UC3 -[hidden]right- UC4
+UC4 -[hidden]right- UC5
+UC5 -[hidden]right- UC6
+UC6 -[hidden]right- UC7
+
+' Position "Render Scene" include vertically.
+UC8 -[hidden]down- UC9
+
+
+' --- Actor to Use Case Relationships ---
+FD --> UC1
+FD --> UC8
+BE --> UC1 : provides 3D assets
+
+' --- CHANGED: Arrow direction now correctly shows the system USING the engine ---
+UC9 --> TJ : uses
+
+
+' --- Use Case to Use Case Relationships ---
+UC1 ..> UC2 : <<include>>
+UC1 ..> UC3 : <<include>>
+UC1 ..> UC4 : <<include>>
+UC1 ..> UC5 : <<include>>
+UC1 ..> UC6 : <<include>>
+UC1 ..> UC7 : <<include>>
+
+UC8 ..> UC9 : <<include>>
+
+UC1 <.. UC10 : <<extend>>
+UC8 <.. UC10 : <<extend>>
+
+@enduml
