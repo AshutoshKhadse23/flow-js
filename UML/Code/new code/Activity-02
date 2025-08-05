@@ -1,0 +1,34 @@
+@startuml
+title Activity Diagram – Part 2: Optional Features & Rendering
+
+|Developer|
+start
+:Continue scene setup;
+
+|SceneLoader|
+' --- Optional: Orbit Controls ---
+if (Enable OrbitControls?) then (yes)
+  |OrbitControlsHandler|
+  :Initialize OrbitControls;
+  :Link controls to camera and canvas;
+  :Enable damping and user input;
+endif
+
+' --- Optional: Raycaster ---
+if (Enable Raycaster?) then (yes)
+  |RaycasterHandler|
+  :Initialize Raycaster;
+  :Listen for mouse events;
+  :Detect intersections with scene objects;
+endif
+
+|Renderer|
+:Configure renderer settings;
+:Set canvas size and resolution;
+:Start rendering loop;
+:Render scene with active camera;
+
+|Developer|
+:Scene loaded and rendered;
+stop
+@enduml
