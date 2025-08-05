@@ -1,0 +1,63 @@
+@startuml
+title Data Flow Diagram - flow.js (Level 1)
+
+skinparam defaultTextAlignment center
+skinparam linetype ortho
+skinparam rectangle {
+  BackgroundColor White
+  BorderColor Black
+  BorderThickness 1
+}
+
+' External Entity
+rectangle "User\n(Developer/Designer)" as User
+
+' Data Stores
+database "GLB File" as GLB
+database "Textures" as Textures
+database "HDRI File" as HDRI
+
+' Grouped Processes inside flow.js
+package "flow.js" {
+  rectangle "1. SceneLoader\n(loadScene)" as SceneLoader
+  rectangle "2. ModelImporter\n(loadModels)" as ModelImporter
+  rectangle "3. MaterialHandler\n(applyMaterials)" as MaterialHandler
+  rectangle "4. LightingManager\n(setupLighting)" as LightingManager
+  rectangle "5. EnvHandler\n(applyHDRI)" as EnvHandler
+  rectangle "6. OrbitControlsHandler\n(initialize/update)" as Controls
+  rectangle "7. RaycasterHandler\n(detectIntersections)" as Raycaster
+  rectangle "8. Renderer\n(render)" as Renderer
+  rectangle "9. WebGLRenderer\n(render, setSize)" as WebGLRenderer
+}
+
+' Outputs
+rectangle "Canvas Output\n(WebGL Render)" as Canvas
+
+' Data Flow
+User --> SceneLoader : Trigger Load
+SceneLoader --> ModelImporter : init()
+ModelImporter --> GLB : read()
+ModelImporter --> SceneLoader : models
+
+SceneLoader --> MaterialHandler : pass models
+MaterialHandler --> Textures : fetch()
+MaterialHandler --> SceneLoader : return materials
+
+SceneLoader --> LightingManager : setup lights
+SceneLoader --> EnvHandler : setup env
+EnvHandler --> HDRI : load HDRI
+
+SceneLoader --> Renderer : send scene
+Renderer --> WebGLRenderer : call render()
+WebGLRenderer --> Canvas : draw frame
+
+' Optional Features
+User -[#gray,dashed]-> Controls : input <<optional>>
+SceneLoader -[#gray,dashed]-> Controls : init <<optional>>
+Controls -[#gray,dashed]-> SceneLoader : controls set <<optional>>
+
+User -[#gray,dashed]-> Raycaster : click <<optional>>
+SceneLoader -[#gray,dashed]-> Raycaster : setup <<optional>>
+Raycaster -[#gray,dashed]-> SceneLoader : intersections <<optional>>
+
+@enduml

@@ -1,5 +1,5 @@
 @startuml
-title Sequence Diagram: Scene Initialization
+title Sequence Diagram: Scene Initialization (with Optional Features)
 
 autonumber
 
@@ -37,15 +37,19 @@ activate environmentHandler
 environmentHandler --> sceneLoader : environment ready
 deactivate environmentHandler
 
-sceneLoader -> orbitControlsHandler : initialize(camera, canvas)
-activate orbitControlsHandler
-orbitControlsHandler --> sceneLoader : controls initialized
-deactivate orbitControlsHandler
+opt Orbit Controls Enabled
+  sceneLoader -> orbitControlsHandler : initialize(camera, canvas)
+  activate orbitControlsHandler
+  orbitControlsHandler --> sceneLoader : controls initialized
+  deactivate orbitControlsHandler
+end
 
-sceneLoader -> raycasterHandler : detectIntersections(event, models)
-activate raycasterHandler
-raycasterHandler --> sceneLoader : intersections[]
-deactivate raycasterHandler
+opt Raycasting Enabled
+  sceneLoader -> raycasterHandler : detectIntersections(event, models)
+  activate raycasterHandler
+  raycasterHandler --> sceneLoader : intersections[]
+  deactivate raycasterHandler
+end
 
 sceneLoader -> renderer : render(scene, camera)
 activate renderer
