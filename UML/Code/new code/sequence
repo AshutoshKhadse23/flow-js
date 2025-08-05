@@ -1,0 +1,64 @@
+@startuml
+title Sequence Diagram: Scene Initialization
+
+autonumber
+
+participant Developer
+participant sceneLoader
+participant modelImporter
+participant materialHandler
+participant lightingManager
+participant environmentHandler
+participant orbitControlsHandler
+participant raycasterHandler
+participant renderer
+participant webGLRenderer
+
+Developer -> sceneLoader : loadScene(path)
+activate sceneLoader
+
+sceneLoader -> modelImporter : loadModels(path)
+activate modelImporter
+modelImporter --> sceneLoader : return models
+deactivate modelImporter
+
+sceneLoader -> materialHandler : applyMaterials(models)
+activate materialHandler
+materialHandler --> sceneLoader : materials applied
+deactivate materialHandler
+
+sceneLoader -> lightingManager : setupDefaultLighting()
+activate lightingManager
+lightingManager --> sceneLoader : lighting ready
+deactivate lightingManager
+
+sceneLoader -> environmentHandler : applyHDRI(path)
+activate environmentHandler
+environmentHandler --> sceneLoader : environment ready
+deactivate environmentHandler
+
+sceneLoader -> orbitControlsHandler : initialize(camera, canvas)
+activate orbitControlsHandler
+orbitControlsHandler --> sceneLoader : controls initialized
+deactivate orbitControlsHandler
+
+sceneLoader -> raycasterHandler : detectIntersections(event, models)
+activate raycasterHandler
+raycasterHandler --> sceneLoader : intersections[]
+deactivate raycasterHandler
+
+sceneLoader -> renderer : render(scene, camera)
+activate renderer
+
+renderer -> webGLRenderer : render(scene, camera)
+activate webGLRenderer
+webGLRenderer --> renderer : rendered output
+deactivate webGLRenderer
+
+renderer --> sceneLoader : scene rendered
+deactivate renderer
+
+sceneLoader --> Developer : Scene Loaded Successfully
+deactivate sceneLoader
+
+@enduml
