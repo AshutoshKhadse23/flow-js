@@ -1,62 +1,50 @@
 @startuml
 title Use Case Diagram: Scene Integration System
 
-' --- General Setup ---
-top to bottom direction
+' --- Layout Settings ---
+left to right direction
 skinparam packageStyle rectangle
 skinparam usecase {
-BorderColor black
-BackgroundColor White
-ArrowColor black
-FontSize 14
+  BorderColor black
+  BackgroundColor White
+  ArrowColor black
+  FontSize 14
 }
 
-' --- Actors ---
+' --- Actors (all on the left) ---
 actor "Frontend Developer" as FD
 actor "Blender Exporter" as BE
 actor "Three.js Engine" as TJ
 
-' --- System Boundary ---
+' --- System Boundary with Vertically Organized Use Cases ---
 rectangle "Scene Integration System" {
-usecase "SceneLoader" as UC1
-usecase "ModelImporter" as UC4
-usecase "MaterialHandler" as UC5
-usecase "LightingManager" as UC6
-usecase "EnvironmentHandler" as UC7
-usecase "Renderer" as UC8
-usecase "WebGLRenderer" as UC9
-usecase "OrbitControlsHandler" as UC10
-usecase "RaycasterHandler" as UC11
+  usecase "(UC5) EnvironmentHandler" as UC5
+  usecase "(UC4) LightingManager" as UC4
+  usecase "(UC3) MaterialHandler" as UC3
+  usecase "(UC2) ModelImporter" as UC2
+  usecase "(UC1) SceneLoader" as UC1
+  usecase "(UC6) Renderer" as UC6
+  usecase "(UC7) WebGLRenderer" as UC7
+  usecase "(UC8) OrbitControlsHandler" as UC8
+  usecase "(UC9) RaycasterHandler" as UC9
 }
-
-' --- Positioning Hints ---
-UC1 -[hidden]right- UC8
-UC4 -[hidden]right- UC5
-UC5 -[hidden]right- UC6
-UC6 -[hidden]right- UC7
-UC10 -[hidden]right- UC11
-UC1 -[hidden]down- UC10
 
 ' --- Actor to Use Case Relationships ---
 FD --> UC1
+FD --> UC6
 FD --> UC8
-FD --> UC11
-FD -down-> UC10 : interacts
-
+FD --> UC9
 BE --> UC1 : provides 3D assets
-UC9 --> TJ : uses
+UC7 --> TJ : uses
 
-' --- Use Case to Use Case Relationships ---
+' --- Use Case Relationships ---
+UC1 ..> UC2 : <<include>>
+UC1 ..> UC3 : <<include>>
 UC1 ..> UC4 : <<include>>
 UC1 ..> UC5 : <<include>>
 UC1 ..> UC6 : <<include>>
-UC1 ..> UC7 : <<include>>
-UC1 ..> UC8 : <<include>>
-
-' Optional features
-UC1 ..> UC10 : <<extend>>
-UC1 ..> UC11 : <<extend>>
-
-UC8 ..> UC9 : <<include>>
+UC1 ..> UC8 : <<extend>>
+UC1 ..> UC9 : <<extend>>
+UC6 ..> UC7 : <<include>>
 
 @enduml
