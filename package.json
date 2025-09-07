@@ -1,17 +1,39 @@
 {
-  "name": "threejs-project",
-  "private": true,
-  "version": "0.0.0",
+  "name": "flowjs",
+  "description": "A comprehensive Three.js scene management library",
+  "version": "1.0.0",
   "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./core/*": "./core/*",
+    "./modules/*": "./modules/*",
+    "./utils/*": "./utils/*",
+    "./examples/*": "./examples/*"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "threejs",
+    "3d",
+    "webgl",
+    "scene-management",
+    "graphics",
+    "visualization"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
   "devDependencies": {
     "vite": "^7.0.3"
   },
   "dependencies": {
     "three": "^0.178.0"
+  },
+  "peerDependencies": {
+    "three": ">=0.150.0"
   }
 }

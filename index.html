@@ -1,21 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Three.js Scene with GLB & HDRI</title>
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        height: 100vh;
-        width: 100vw;
-      }
-      canvas {
-        display: block;
-      }
-    </style>
-  </head>
-  <body>
-    <script type="module" src="./src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>FlowJS - Three.js Scene Management Library</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      font-family: Arial, sans-serif;
+      background: #000;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      z-index: 100;
+    }
+
+    #info h3 {
+      margin: 0 0 10px 0;
+      color: #4CAF50;
+    }
+
+    #info p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="info">
+    <h3>FlowJS Demo</h3>
+    <p>🎮 Mouse: Orbit camera</p>
+    <p>🔍 Wheel: Zoom</p>
+    <p>📁 Library Structure: Modular & Clean</p>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+
 </html>
