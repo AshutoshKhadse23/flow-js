@@ -2,33 +2,7 @@
 
 FlowJS is a comprehensive Three.js scene management library that provides a clean, modular architecture for building 3D web applications.
 
-## 📁 Library Structure
-
-```
-/your-library
-├── core/
-│   ├── loader.js           # Asset loading utilities
-│   ├── sceneManager.js     # Scene creation and management
-│   ├── renderer.js         # Renderer configuration
-│   └── resourceManager.js  # Resource cleanup and management
-├── modules/
-│   ├── models.js          # 3D model utilities
-│   ├── materials.js       # Material creation and presets
-│   ├── lighting.js        # Lighting systems and presets
-│   ├── environment.js     # Environment and HDRI management
-│   └── camera.js          # Camera controls and presets
-├── utils/
-│   ├── config.js          # Configuration management
-│   ├── logger.js          # Logging utilities
-│   ├── validator.js       # Input validation
-│   └── helpers.js         # General utilities
-├── examples/
-│   └── basicScene.js      # Example implementations
-├── index.js               # Main entry point
-└── package.json           # Package configuration
-```
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Basic Usage
 
@@ -83,7 +57,7 @@ const glassMaterial = scene.createMaterialWithPreset('glass', {
 scene.applyEnvironmentPreset('foggyForest');
 ```
 
-## 📖 API Documentation
+## API Documentation
 
 ### Core Classes
 
@@ -176,7 +150,7 @@ const randomValue = Helpers.random(0, 100);
 const clampedValue = Helpers.clamp(value, 0, 1);
 ```
 
-## 🎯 Examples
+## Examples
 
 ### Basic Scene
 ```javascript
@@ -220,7 +194,7 @@ model.traverse((child) => {
 });
 ```
 
-## 🔧 Configuration
+## Configuration
 
 FlowJS uses a centralized configuration system:
 
@@ -253,7 +227,7 @@ npm run build
 npm run dev
 ```
 
-## 📄 License
+## License
 
 MIT License - see LICENSE file for details.
 
