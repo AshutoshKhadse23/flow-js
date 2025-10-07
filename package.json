@@ -28,7 +28,10 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
+    "@gltf-transform/cli": "^4.2.1",
+    "@gltf-transform/functions": "^4.2.1",
     "crypto-browserify": "^3.12.1",
+    "meshoptimizer": "^0.25.0",
     "three": ">=0.150.0",
     "vite": "^7.1.4"
   },
