@@ -16,7 +16,7 @@ async function loadTestScene() {
         aspect: window.innerWidth / window.innerHeight,
         near: 0.1,
         far: 1000,
-        position: [0, 2, 8]
+        position: [0, 30, 60]
     });
 
     const controls = createOrbitControls(camera, renderer.getRenderer(), {

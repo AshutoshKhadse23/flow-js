@@ -20,12 +20,23 @@ const DEFAULT_LOD_LEVELS = [
  */
 export const updateManager = {
     lods: new Set(),
-    add(lod) { this.lods.add(lod); },
-    remove(lod) { this.lods.delete(lod); },
+    add(lod) { 
+        this.lods.add(lod); 
+        lod.userData.currentLevel = -1;
+    },
+    remove(lod) { 
+        this.lods.delete(lod);
+    },
     update(camera) {
         for (const lod of this.lods) {
+            const previousLevel = lod.userData.currentLevel;
             lod.update(camera);
-            console.log("Model updated!!!")
+            const newLevel = lod.getCurrentLevel();
+            if (previousLevel !== newLevel) {
+                console.log(`LOD Switched MESH: ${lod.uuid}, PREVIOUS_LEVEL: ${previousLevel}, NEW_LEVEL: ${newLevel}`)
+                lod.userData.currentLevel = newLevel;
+            }
+
         }
     }
 };
