@@ -20,11 +20,11 @@ const simplifierReady = MeshoptSimplifier.ready;
  */
 export const updateManager = {
     lods: new Set(),
-    add(lod) { 
-        this.lods.add(lod); 
+    add(lod) {
+        this.lods.add(lod);
         lod.userData.currentLevel = -1;
     },
-    remove(lod) { 
+    remove(lod) {
         this.lods.delete(lod);
     },
     // update(camera) {
@@ -64,129 +64,98 @@ export const updateManager = {
 };
 
 const DEFAULT_LOD_LEVELS = [
-  { distance: 0 },   // LOD0
-  { distance: 10 },  // LOD1
-  { distance: 20 },  // LOD2
+    { distance: 0 },   // LOD0 (highest detail)
+    { distance: 10 },  // LOD1
+    { distance: 20 },  // LOD2 (lowest detail)
 ];
 
-// export async function loadGLTF(url, options = {}) {
-//   const {
-//     scale = [1, 1, 1],
-//     position = [0, 0, 0],
-//     rotation = [0, 0, 0],
-//     lod = false,
-//     lodBaseName = null,
-//     lodLevels = DEFAULT_LOD_LEVELS,
-//   } = options;
-
-//   const loader = new GLTFLoader();
-
-//   // --- STANDARD LOADING PATH (NO CHANGE) ---
-//   if (!lod) {
-//     const gltf = await loader.loadAsync(url);
-//     const model = gltf.scene;
-//     model.scale.set(...scale);
-//     model.position.set(...position);
-//     model.rotation.set(...rotation);
-//     return { model, gltf };
-//   }
-
-//   // --- NEW AUTOMATED PROGRESSIVE LOADING ---
-
-//   // 1. Create a container Group. This is what we return to the user IMMEDIATELY.
-//   const container = new THREE.Group();
-//   container.scale.set(...scale);
-//   container.position.set(...position);
-//   container.rotation.set(...rotation);
-
-//   const baseName = lodBaseName || url.replace(/_LOD\d+\.glb$/, "");
-//   const lowestLodIndex = lodLevels.length - 1;
-//   const lowestLodFile = `${baseName}_LOD${lowestLodIndex}.glb`;
-
-//   // 2. Load the placeholder model.
-//   const placeholderGltf = await loader.loadAsync(lowestLodFile);
-//   const placeholderModel = placeholderGltf.scene;
-//   container.add(placeholderModel);
-
-//   // 3. Define a background task to load the rest and perform the swap.
-//   //    We DON'T await this. It runs in the background.
-//   (async () => {
-//     try {
-//       const remainingLevels = lodLevels.slice(0, lowestLodIndex);
-//       const remainingFiles = remainingLevels.map((_, i) => `${baseName}_LOD${i}.glb`);
-      
-//       const remainingGltfs = await Promise.all(
-//           remainingFiles.map(file => loader.loadAsync(file))
-//       );
-
-//       // Assemble the final LOD object
-//       const lodObject = new THREE.LOD();
-//       const allGltfs = [...remainingGltfs, placeholderGltf].sort((a, b) => {
-//           const indexA = parseInt(a.userData.url.match(/_LOD(\d+)/)[1]);
-//           const indexB = parseInt(b.userData.url.match(/_LOD(\d+)/)[1]);
-//           return indexA - b;
-//       });
-
-//       allGltfs.forEach((gltf, i) => lodObject.addLevel(gltf.scene, lodLevels[i].distance));
-      
-//       // THIS IS THE MAGIC SWAP
-//       container.remove(placeholderModel); // Remove the placeholder
-//       container.add(lodObject);           // Add the final LOD object
-//       updateManager.add(lodObject);       // Register the new object for updates
-//       console.log("✅ Full LOD model automatically swapped in background.");
-
-//     } catch (error) {
-//       console.error("Background LOD loading failed:", error);
-//     }
-//   })();
-
-//   // 4. Return the container with the placeholder inside. The user can use this right away.
-//   return { model: container, gltf: placeholderGltf };
-// }
-
-/* 3RD LOAD GLTF FUNCTION THIS TIME FINAL ON GOD FR FR */
-
 export async function loadGLTF(url, options = {}) {
-  const {
-    scale = [1, 1, 1],
-    position = [0, 0, 0],
-    rotation = [0, 0, 0],
-    useCameraFromFile = true,
-    lod = false,
-    lodBaseName = null,
-    lodLevels = DEFAULT_LOD_LEVELS,
-    onLoad = null,
-  } = options;
+    const {
+        scale = [1, 1, 1],
+        position = [0, 0, 0],
+        rotation = [0, 0, 0],
+        useCameraFromFile = true,
+        lod = false,
+        lodBaseName = null,
+        lodLevels = DEFAULT_LOD_LEVELS,
+        onLoad = null,
+        progressiveLOD = true, // 👈 New flag for progressive loading
+        onProgress = null,
+        swapDelay = 2000       // 👈 Time (ms) to wait before swapping in higher LODs
+    } = options;
 
-  const loader = new GLTFLoader();
+    const loader = new GLTFLoader();
 
-  if (!lod) {
-    const gltf = await loader.loadAsync(url);
-    const model = gltf.scene;
-    model.scale.set(...scale);
-    model.position.set(...position);
-    model.rotation.set(...rotation);
-    if (onLoad) onLoad({ model, gltf });
-    return { model, gltf };
-  }
+    // Simple non-LOD load
+    if (!lod) {
+        const gltf = await loader.loadAsync(url);
+        const model = gltf.scene;
+        model.scale.set(...scale);
+        model.position.set(...position);
+        model.rotation.set(...rotation);
+        if (onLoad) onLoad({ model, gltf });
+        return { model, gltf };
+    }
 
-  // Load pre-generated LOD models
-  const baseName = lodBaseName || url.replace(/_LOD\d+\.glb$/, "");
-  const ext = ".glb";
-  const lodFiles = lodLevels.map((_, i) => `${baseName}_LOD${i}.glb`);
+    // Build LOD file paths
+    const baseName = lodBaseName || url.replace(/_LOD\d+\.glb$/, "");
+    const ext = ".glb";
+    const lodFiles = lodLevels.map((_, i) => `${baseName}_LOD${i}.glb`);
 
-  const gltfs = await Promise.all(lodFiles.map(file => loader.loadAsync(file)));
+    const lodObject = new THREE.LOD();
 
-  const lodObject = new THREE.LOD();
-  gltfs.forEach((gltf, i) => lodObject.addLevel(gltf.scene, lodLevels[i].distance));
+    if (progressiveLOD) {
+        // --- STEP 1: Load only the lowest LOD (last in the array)
+        const lowestIndex = lodLevels.length - 1;
+        const lowGltf = await loader.loadAsync(lodFiles[lowestIndex]);
+        const lowModel = lowGltf.scene;
+        lowModel.scale.set(...scale);
+        lowModel.position.set(...position);
+        lowModel.rotation.set(...rotation);
+        lodObject.addLevel(lowModel, lodLevels[lowestIndex].distance);
 
-  lodObject.scale.set(...scale);
-  lodObject.position.set(...position);
-  lodObject.rotation.set(...rotation);
+        // Trigger initial onLoad (shows low-poly model fast)
+        if (onLoad) onLoad({ model: lodObject, gltfs: [lowGltf] });
 
-  if (onLoad) onLoad({ model: lodObject, gltfs });
+        // --- STEP 2: Asynchronously load higher LODs
+        (async () => {
+            for (let i = 0; i < lowestIndex; i++) {
+                try {
+                    const gltf = await loader.loadAsync(lodFiles[i]);
+                    lodObject.addLevel(gltf.scene, lodLevels[i].distance);
+                    // Callback for console log when high poly model is loaded 
+                    if (onProgress) {
+                        onProgress({
+                            level: i,
+                            file: lodFiles[i],
+                            message: `Loaded LOD${i} (high poly)`
+                        });
+                    } else {
+                        console.log(`Loaded LOD${i} (high poly)`);
+                    }
+                } catch (err) {
+                    console.warn(`Failed to load LOD${i}:`, err);
+                }
+            }
+        })();
 
-  return { model: lodObject, gltfs };
+        // Optional: wait a few seconds before starting swaps
+        setTimeout(() => {
+            lodObject.updateMatrixWorld(true);
+        }, swapDelay);
+    }
+    else {
+        // --- Original behavior: load all LODs at once
+        const gltfs = await Promise.all(lodFiles.map(file => loader.loadAsync(file)));
+        gltfs.forEach((gltf, i) => lodObject.addLevel(gltf.scene, lodLevels[i].distance));
+        if (onLoad) onLoad({ model: lodObject, gltfs });
+    }
+
+    lodObject.scale.set(...scale);
+    lodObject.position.set(...position);
+    lodObject.rotation.set(...rotation);
+
+    return { model: lodObject };
 }
 
 /**
@@ -234,7 +203,7 @@ export async function loadGLTF(url, options = {}) {
 
 //             // 1. Fetch and read the original model data
 //             const originalBuffer = await fileLoader.loadAsync(url, onProgress);
-            
+
 //             // 2. Generate lower-poly model buffers in memory
 //             const originalUint8Array = new Uint8Array(originalBuffer);
 //             const document = await io.readBinary(originalUint8Array);
@@ -259,11 +228,11 @@ export async function loadGLTF(url, options = {}) {
 //                 return gltfLoader.parseAsync(arrayBuffer, '');
 //             });
 //             const gltfs = await Promise.all(gltfPromises);
-            
+
 //             // 4. Assemble the THREE.LOD object
 //             const lodObject = new THREE.LOD();
 //             const originalGltf = gltfs[0];
-            
+
 //             lodObject.addLevel(originalGltf.scene, 0);
 //             gltfs.slice(1).forEach((gltf, index) => {
 //                 lodObject.addLevel(gltf.scene, lodLevels[index].distance);

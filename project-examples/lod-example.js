@@ -17,7 +17,7 @@ async function loadTestScene() {
         aspect: window.innerWidth / window.innerHeight,
         near: 0.1,
         far: 1000,
-        position: [0, 30, 60]
+        position: [0, 0, 8]
     });
 
     const controls = createOrbitControls(camera, renderer.getRenderer(), {
@@ -30,6 +30,11 @@ async function loadTestScene() {
     const shipModel = await loadGLTF('./public/ship_LOD0.glb', {
         lod: true,
         lodBaseName: './public/ship',
+        onLoad: ({ model }) => console.log("Low poly model loaded"),
+        onProgress: ({ level, file, message }) => {
+            console.log(`[LOD PROGRESS] ${message} from ${file}`);
+        },
+        swapDelay: 5000,
         position: [0, 0, 0]
     });
     scene.add(shipModel.model);
