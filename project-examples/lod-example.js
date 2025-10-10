@@ -26,9 +26,10 @@ async function loadTestScene() {
 
     await loadHDRI('/hdri.hdr', scene);
 
-    const shipModel = await loadGLTF('./public/ship.glb', {
+    const shipModel = await loadGLTF('./public/ship_LOD0.glb', {
         lod: true,
-        position: [0, 0, 0],
+        lodBaseName: './public/ship',
+        position: [0, 0, 0]
     });
     scene.add(shipModel.model);
 
