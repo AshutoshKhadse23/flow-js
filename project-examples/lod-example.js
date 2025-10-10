@@ -2,10 +2,8 @@ import { SceneManager } from '../library/core/sceneManager.js';
 import { Renderer } from '../library/core/renderer.js';
 import { loadGLTF, loadHDRI, updateManager } from '../library/core/loader.js';
 import { CameraManager, createOrbitControls } from '../library/modules/camera.js';
-import { runLoadTimeBenchmark } from '../benchmark.js';
 
 async function loadTestScene() {
-    await runLoadTimeBenchmark();
 
     const sceneManager = new SceneManager();
     const scene = sceneManager.getScene();
@@ -43,13 +41,10 @@ async function loadTestScene() {
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // const fpsMeter = new FPSMeter();
-
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
         updateManager.update(camera);
-        // fpsMeter.update();
         renderer.render(scene, camera);
     }
     animate();
