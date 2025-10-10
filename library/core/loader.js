@@ -69,6 +69,83 @@ const DEFAULT_LOD_LEVELS = [
   { distance: 20 },  // LOD2
 ];
 
+// export async function loadGLTF(url, options = {}) {
+//   const {
+//     scale = [1, 1, 1],
+//     position = [0, 0, 0],
+//     rotation = [0, 0, 0],
+//     lod = false,
+//     lodBaseName = null,
+//     lodLevels = DEFAULT_LOD_LEVELS,
+//   } = options;
+
+//   const loader = new GLTFLoader();
+
+//   // --- STANDARD LOADING PATH (NO CHANGE) ---
+//   if (!lod) {
+//     const gltf = await loader.loadAsync(url);
+//     const model = gltf.scene;
+//     model.scale.set(...scale);
+//     model.position.set(...position);
+//     model.rotation.set(...rotation);
+//     return { model, gltf };
+//   }
+
+//   // --- NEW AUTOMATED PROGRESSIVE LOADING ---
+
+//   // 1. Create a container Group. This is what we return to the user IMMEDIATELY.
+//   const container = new THREE.Group();
+//   container.scale.set(...scale);
+//   container.position.set(...position);
+//   container.rotation.set(...rotation);
+
+//   const baseName = lodBaseName || url.replace(/_LOD\d+\.glb$/, "");
+//   const lowestLodIndex = lodLevels.length - 1;
+//   const lowestLodFile = `${baseName}_LOD${lowestLodIndex}.glb`;
+
+//   // 2. Load the placeholder model.
+//   const placeholderGltf = await loader.loadAsync(lowestLodFile);
+//   const placeholderModel = placeholderGltf.scene;
+//   container.add(placeholderModel);
+
+//   // 3. Define a background task to load the rest and perform the swap.
+//   //    We DON'T await this. It runs in the background.
+//   (async () => {
+//     try {
+//       const remainingLevels = lodLevels.slice(0, lowestLodIndex);
+//       const remainingFiles = remainingLevels.map((_, i) => `${baseName}_LOD${i}.glb`);
+      
+//       const remainingGltfs = await Promise.all(
+//           remainingFiles.map(file => loader.loadAsync(file))
+//       );
+
+//       // Assemble the final LOD object
+//       const lodObject = new THREE.LOD();
+//       const allGltfs = [...remainingGltfs, placeholderGltf].sort((a, b) => {
+//           const indexA = parseInt(a.userData.url.match(/_LOD(\d+)/)[1]);
+//           const indexB = parseInt(b.userData.url.match(/_LOD(\d+)/)[1]);
+//           return indexA - b;
+//       });
+
+//       allGltfs.forEach((gltf, i) => lodObject.addLevel(gltf.scene, lodLevels[i].distance));
+      
+//       // THIS IS THE MAGIC SWAP
+//       container.remove(placeholderModel); // Remove the placeholder
+//       container.add(lodObject);           // Add the final LOD object
+//       updateManager.add(lodObject);       // Register the new object for updates
+//       console.log("✅ Full LOD model automatically swapped in background.");
+
+//     } catch (error) {
+//       console.error("Background LOD loading failed:", error);
+//     }
+//   })();
+
+//   // 4. Return the container with the placeholder inside. The user can use this right away.
+//   return { model: container, gltf: placeholderGltf };
+// }
+
+/* 3RD LOAD GLTF FUNCTION THIS TIME FINAL ON GOD FR FR */
+
 export async function loadGLTF(url, options = {}) {
   const {
     scale = [1, 1, 1],
