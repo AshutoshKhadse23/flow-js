@@ -5,6 +5,10 @@ import { CameraManager, createOrbitControls } from '../library/modules/camera.js
 
 async function loadTestScene() {
 
+    const startTime = performance.now(); // 🕒 Start timing
+    console.time("Scene Load Time");     // Console measurement
+
+
     const sceneManager = new SceneManager();
     const scene = sceneManager.getScene();
 
@@ -53,6 +57,17 @@ async function loadTestScene() {
         renderer.render(scene, camera);
     }
     animate();
+
+    const endTime = performance.now();
+    const totalLoadTime = ((endTime - startTime) / 1000).toFixed(2); // in seconds
+    console.timeEnd("Scene Load Time");
+    console.log(`⏱️ Total Load Time: ${totalLoadTime} seconds`);
+
+    const infoBox = document.getElementById('info');
+    if (infoBox) {
+        infoBox.innerHTML += `<br>⏱️ Load Time: <strong>${totalLoadTime}s</strong>`;
+    }
+
 
     document.getElementById('loading').style.display = 'none';
 }

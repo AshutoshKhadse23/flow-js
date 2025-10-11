@@ -41,7 +41,7 @@ function init() {
     });
 
     // Load Model
-    new GLTFLoader().load('/jet.glb', (gltf) => {
+    new GLTFLoader().load('/ship.glb', (gltf) => {
         scene.add(gltf.scene);
     });
 
