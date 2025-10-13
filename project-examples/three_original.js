@@ -5,8 +5,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 async function loadTestScene() {
 
-    const startTime = performance.now(); // 🕒 Start timing
-    console.time("Scene Load Time");     // Console measurement
+    const startTime = performance.now();
+    console.time("Scene Load Time");   
 
     // Scene
     const scene = new THREE.Scene();
