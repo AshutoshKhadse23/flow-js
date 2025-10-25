@@ -1,9 +1,12 @@
 {
-  "name": "flowjs",
+  "name": "flowjs3d",
   "description": "A comprehensive Three.js scene management library",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
+  "bin": {
+    "generate-lod-models": "./library/cli/lod.js"
+  },
   "exports": {
     ".": "./index.js",
     "./core/*": "./core/*",

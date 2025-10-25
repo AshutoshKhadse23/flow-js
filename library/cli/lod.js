@@ -1,4 +1,5 @@
-// generateLOD.js
+#!/usr/bin/env node
+
 import { WebIO } from "@gltf-transform/core";
 import { simplify, weld, quantize, cloneDocument } from "@gltf-transform/functions";
 import { MeshoptSimplifier } from "meshoptimizer";
@@ -48,12 +49,26 @@ async function generateLODs(inputPath, outputDir, lodLevels = DEFAULT_LOD_LEVELS
   console.log("All LODs generated successfully!");
 }
 
-// CLI usage
-const [,, input, outputDir] = process.argv;
 
-if (!input || !outputDir) {
-  console.error("Usage: node generateLOD.js <input.glb> <outputDir>");
-  process.exit(1);
+async function main () {
+  const [,, input, outputDir] = process.argv;
+
+  if (!input || !outputDir) {
+    console.error("Error: Missing required arguments.");
+    console.error("\nUsage: npx flow-lod <input.glb> <outputDir>");
+    process.exit(1);
+  }
+
+  try {
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    await generateLODs(input, outputDir);
+
+  } catch (e) {
+    console.error(`\nAn error occurred: ${e.message}`);
+    process.exit(1);
+  }
 }
 
-await generateLODs(input, outputDir);
+main()
